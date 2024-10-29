@@ -71,7 +71,8 @@ class GhostClient:
             <!--kg-card-begin: html-->
             <style>
             .gh-content {{
-                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='150px'><text transform='translate(20, 150) rotate(-45)' fill='rgba(0, 0, 0, 0.1)' font-weight='bold' font-size='30' font-family='sans-serif'>{article.meta.get("watermark")}</text></svg>");
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='150px'><text transform='translate(40, 120) rotate(-45)' fill='rgba(0, 0, 0, 0.05)' font-weight='bold' font-size='30' font-family='sans-serif'>{article.meta.get("watermark")}</text></svg>");
+                background-position: center center;
             }}
             </style>
             <!--kg-card-end: html-->
@@ -80,7 +81,7 @@ class GhostClient:
         return {
             "posts": [
                 {
-                    "title": article.title,
+                    "title": article.title + (f" - {article.alt_title}" if article.alt_title else ""),
                     "slug": article.filename.lower(),
                     "authors": authors,
                     "updated_at": updated_at,
@@ -120,6 +121,8 @@ def main(base_url: str, token: str, input: Path, tags: List[str]):
 
     for article in printer.get_articles():
         client.create_or_update_post(article)
+
+        print(f"Updated {article.title} at {base_url}/{article.filename.lower()}")
 
 
 if __name__ == "__main__":

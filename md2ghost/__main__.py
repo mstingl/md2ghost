@@ -63,7 +63,11 @@ class GhostClient:
         return response
 
     def _post_data(self, article: Article, updated_at: Optional[str] = None):
-        authors = re.findall(r"<([^@]+@[^>]+)>", str(subprocess.check_output(["git", "shortlog", "-s", "-e", "--", str(article.source)]), "utf-8"))
+        git_authors = str(subprocess.check_output(["git", "shortlog", "-s", "-e", "--", article.source]), "utf-8")
+        authors = re.findall(r"<([^@]+@[^>]+)>", git_authors)
+        if not authors:
+            raise ValueError("Author could't be loaded from git")
+
         html_suffix = ""
 
         if article.meta.get("watermark"):
